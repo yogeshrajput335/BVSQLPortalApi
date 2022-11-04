@@ -117,9 +117,9 @@ namespace BVPortalApi.Controllers
                             children.Add(new ProjectEmpTreeDTO {Name = emp.EmployeeName});
                         }
                     }
-                    ch.Add(new ProjectEmpTreeDTO {Name = "[PROJECT] "+item.ProjectName,Children=children});
+                    ch.Add(new ProjectEmpTreeDTO {Name = item.ProjectName,Children=children});
                 }
-                tree.Add(new ProjectEmpTreeDTO {Name = "[CLIENT] "+c.ClientName,Children=ch});
+                tree.Add(new ProjectEmpTreeDTO {Name = c.ClientName,Children=ch});
             }
             
             if (List.Count < 0)
@@ -147,32 +147,26 @@ namespace BVPortalApi.Controllers
                 p => p.EmployeeId,
                 (key, g) => new ProjectEmpCount{ ProjectName = key, EmployeeCount = g.Count() }).ToList();
             
-            return sum;
-        }
-        
-        [HttpGet("GetProjectCount")]
-        public async Task<ActionResult<ProjectCountDTO>> GetProjectCount()
-        {
-            ProjectCountDTO sum = new  ProjectCountDTO();
             var ProjectList = await DBContext.Project.Select(x=>x).ToListAsync();
             sum.NewProjectsCount = ProjectList.Where(x=>x.Status=="NEW").Count();
             sum.ApprovedProjectsCount = ProjectList.Where(x=>x.Status=="APPROVED").Count();
             sum.RejectedProjectsCount = ProjectList.Where(x=>x.Status=="REJECTED").Count();
-            
-             return sum;
-        }
-        [HttpGet("GetEmployeeCount")]
-        public async Task<ActionResult<EmployeeCountDTO>> GetEmployeeCount()
-        {
-         {
-            EmployeeCountDTO sum = new  EmployeeCountDTO();
+
             var EmployeeList = await DBContext.Employee.Select(x=>x).ToListAsync();
             sum.ActiveEmployeeCount = EmployeeList.Where(x=>x.Status=="ACTIVE").Count();
             sum.InactiveEmployeeCount = EmployeeList.Where(x=>x.Status=="INACTIVE").Count();
-             return sum;
 
-             
+            sum.ClientEmpCount = DBContext.ProjectAssignment.GroupBy(
+                p => p.Project.Client.ClientName, 
+                p => p.EmployeeId,
+                (key, g) => new ClientEmpCount{ ClientName = key, EmployeeCount = g.Count() }).ToList();
+
+            sum.ClientProjectCount = DBContext.Project.GroupBy(
+                p => p.Client.ClientName, 
+                p => p.Id,
+                (key, g) => new ClientProjectCount{ ClientName = key, ProjectCount = g.Count() }).ToList();
+
+            return sum;
         }
-}
 }
 }
