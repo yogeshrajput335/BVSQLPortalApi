@@ -17,5 +17,8 @@ namespace BVPortalApi.Models
         [ForeignKey("Employee")]
         public int? ReferBy { get; set; }
         public virtual Employee Employee { get; set; }
+        [ForeignKey("Openjobs")]
+        public int? JobId { get; set; }
+        public virtual Openjobs Openjobs { get; set; }
     }
 }
