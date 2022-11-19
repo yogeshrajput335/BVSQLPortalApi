@@ -22,6 +22,7 @@ namespace BVPortalApi.Controllers
         {
             this.DBContext = DBContext;
         }
+
         [HttpGet("GetTimesheetMaster")]
         public async Task<ActionResult<List<TimesheetMasterDTO>>> Get()
         {
@@ -44,6 +45,7 @@ namespace BVPortalApi.Controllers
                 return List;
             }
         }
+
         [HttpPost("InsertTimesheetMaster")]
         public async Task < HttpStatusCode > InsertTimesheetMaster(TimesheetMasterDTO s) {
             var entity = new TimesheetMaster() {
@@ -55,6 +57,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.Created;
         }
+
         [HttpPut("UpdateTimesheetMaster")]
         public async Task<HttpStatusCode> UpdateTimesheetMaster(TimesheetMasterDTO TimesheetMaster) {
             var entity = await DBContext.TimesheetMaster.FirstOrDefaultAsync(s => s.Id == TimesheetMaster.Id);
@@ -64,6 +67,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
+        
         [HttpDelete("DeleteTimesheetMaster/{Id}")]
         public async Task < HttpStatusCode > DeleteTimesheetMaster(int Id) {
             var entity = new TimesheetMaster() {

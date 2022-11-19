@@ -24,6 +24,7 @@ namespace BVPortalApi.Controllers
             this.DBContext = DBContext;
             this.emailService = emailService;
         }
+
         [HttpGet("GetUsers")]
         public async Task<ActionResult<List<UserDTO>>> Get()
         {
@@ -50,6 +51,34 @@ namespace BVPortalApi.Controllers
                 return List;
             }
         }
+
+        [HttpGet("GetUsers/{Id}")]
+        public async Task<ActionResult<UserDTO>> Get(int Id)
+        {
+            var List = await DBContext.Users.Where(x=>x.EmployeeId==Id).Select(
+                s => new UserDTO
+                {
+                    Id = s.Id,
+                    Username = s.Username,
+                    Password = s.Password,
+                    UserType = s.UserType,
+                    Email = s.Email,
+                    Status = s.Status,
+                    EmployeeId = s.EmployeeId,
+                    Employee = s.Employee.FirstName+ " "+s.Employee.LastName
+                }
+            ).FirstOrDefaultAsync();
+            
+            if (List==null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return List;
+            }
+        }
+
         [HttpPost("InsertUser")]
         public async Task < HttpStatusCode > InsertUser(UserDTO User) {
             var entity = new User() {
@@ -64,6 +93,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.Created;
         }
+
         [HttpPut("UpdateUser")]
         public async Task<HttpStatusCode> UpdateUser(UserDTO User) {
             var entity = await DBContext.Users.FirstOrDefaultAsync(s => s.Id == User.Id);
@@ -76,6 +106,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
+
         [HttpDelete("DeleteUser/{Id}")]
         public async Task < HttpStatusCode > DeleteUser(int Id) {
             var entity = new User() {
@@ -86,6 +117,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
+        
         [HttpPost("VerifyUser")]
         public async Task<UserWithToken> VerifyUser([FromBody] UserDTO u1) {
             if(u1.Username=="super" && u1.Password=="super")

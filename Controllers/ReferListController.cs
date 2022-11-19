@@ -22,6 +22,7 @@ namespace BVPortalApi.Controllers
         {
             this.DBContext = DBContext;
         }
+
         [HttpGet("GetReferList")]
         public async Task<ActionResult<List<ReferListDTO>>> Get()
         {
@@ -46,6 +47,7 @@ namespace BVPortalApi.Controllers
                 return List;
             }
         }
+
         [HttpPost("InsertReferList")]
         public async Task < HttpStatusCode > InsertReferList(ReferListDTO s) {
             var entity = new ReferList() {
@@ -59,6 +61,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.Created;
         }
+
         [HttpPut("UpdateReferList")]
         public async Task<HttpStatusCode> UpdateReferList(ReferListDTO ReferList) {
             var entity = await DBContext.ReferList.FirstOrDefaultAsync(s => s.Id == ReferList.Id);
@@ -70,6 +73,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
+
         [HttpDelete("DeleteReferList/{Id}")]
         public async Task < HttpStatusCode > DeleteReferList(int Id) {
             var entity = new ReferList() {
@@ -80,7 +84,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
-        //MoveToCandidate
+        
         [HttpDelete("MoveToCandidate/{Id}/{EmployeeId}")]
         public async Task < HttpStatusCode > MoveToCandidate(int Id,int EmployeeId) {
             var entity = await DBContext.ReferList.FirstOrDefaultAsync(s => s.Id == Id);

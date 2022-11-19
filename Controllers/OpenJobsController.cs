@@ -22,6 +22,7 @@ namespace BVPortalApi.Controllers
         {
             this.DBContext = DBContext;
         }
+
         [HttpGet("GetOpenjobs")]
         public async Task<ActionResult<List<OpenjobsDTO>>> Get()
         {
@@ -47,6 +48,7 @@ namespace BVPortalApi.Controllers
                 return List;
             }
         }
+
         [HttpGet("GetDeletedjobs")]
         public async Task<ActionResult<List<OpenjobsDTO>>> GetDeletedjobs()
         {
@@ -72,6 +74,7 @@ namespace BVPortalApi.Controllers
                 return List;
             }
         }
+
         [HttpPut("UpdateStatusActiveOpenjobs/{Id}")]
         public async Task<HttpStatusCode> UpdateStatusActiveOpenjobs(int Id ) {
             var entity = await DBContext.Openjobs.FirstOrDefaultAsync(s => s.Id == Id);
@@ -80,6 +83,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
+
         [HttpPost("InsertOpenjobs")]
         public async Task < HttpStatusCode > InsertOpenjobs(OpenjobsDTO s) {
             var entity = new Openjobs() {
@@ -94,6 +98,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.Created;
         }
+
         [HttpPut("UpdateOpenjobs")]
         public async Task<HttpStatusCode> UpdateOpenjobs(OpenjobsDTO Openjobs) {
             var entity = await DBContext.Openjobs.FirstOrDefaultAsync(s => s.Id == Openjobs.Id);
@@ -106,6 +111,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
+
         [HttpPut("UpdateStatusInactiveOpenjobs/{Id}")]
         public async Task<HttpStatusCode> UpdateStatusInactiveOpenjobs(int Id ) {
             var entity = await DBContext.Openjobs.FirstOrDefaultAsync(s => s.Id == Id);
@@ -114,6 +120,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
+
         [HttpDelete("DeleteOpenjobs/{Id}")]
         public async Task < HttpStatusCode > DeleteOpenjobs(int Id) {
             var entity = new Openjobs() {
@@ -124,5 +131,26 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
+        
+        [HttpPost("ApplyJob")]
+        public async Task < HttpStatusCode > ApplyJob(ApplyJobDTO s) {
+            var emp = DBContext.Employee.Where(x=>x.Id==s.EmployeeId).FirstOrDefault();
+            //  : Add jobid in candidate  
+                
+            
+           var entity = new Candidate() {
+                    JobId = s.JobId,
+                    FirstName = emp.FirstName,
+                    LastName = emp.LastName,
+                    PhoneNo = emp.PhoneNumber,
+                    Email=emp.Email,
+                    Status = "SELF-REFER",
+                    ReferBy = emp.Id
+            };
+            DBContext.Candidates.Add(entity);
+            await DBContext.SaveChangesAsync();
+            return HttpStatusCode.Created;
+        }
     }
+    
 }

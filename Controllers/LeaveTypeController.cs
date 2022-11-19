@@ -22,6 +22,7 @@ namespace BVPortalApi.Controllers
         {
             this.DBContext = DBContext;
         }
+
         [HttpGet("GetLeaveTypes")]
         public async Task<ActionResult<List<LeaveTypeDTO>>> Get()
         {
@@ -44,6 +45,7 @@ namespace BVPortalApi.Controllers
                 return List;
             }
         }
+
         [HttpPost("InsertLeaveType")]
         public async Task < HttpStatusCode > InsertLeaveType(LeaveTypeDTO s) {
             var entity = new LeaveType() {
@@ -55,6 +57,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.Created;
         }
+
         [HttpPut("UpdateLeaveType")]
         public async Task<HttpStatusCode> UpdateLeaveType(LeaveTypeDTO LeaveType) {
             var entity = await DBContext.LeaveType.FirstOrDefaultAsync(s => s.Id == LeaveType.Id);
@@ -64,6 +67,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
+        
         [HttpDelete("DeleteLeaveType/{Id}")]
         public async Task < HttpStatusCode > DeleteLeaveType(int Id) {
             var entity = new LeaveType() {

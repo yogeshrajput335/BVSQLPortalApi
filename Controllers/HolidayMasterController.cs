@@ -22,6 +22,7 @@ namespace BVPortalApi.Controllers
         {
             this.DBContext = DBContext;
         }
+
         [HttpGet("GetHolidayMaster")]
         public async Task<ActionResult<List<HolidayMasterDTO>>> Get()
         {
@@ -45,6 +46,7 @@ namespace BVPortalApi.Controllers
                 return List;
             }
         }
+
         [HttpPost("InsertHolidayMaster")]
         public async Task<HttpStatusCode> InsertHolidayMaster(HolidayMasterDTO s)
         {
@@ -60,6 +62,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.Created;
         }
+
         [HttpPut("UpdateHolidayMaster")]
         public async Task<HttpStatusCode> UpdateHolidayMaster(HolidayMasterDTO HolidayMaster)
         {
@@ -71,6 +74,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
+        
         [HttpDelete("DeleteHolidayMaster/{Id}")]
         public async Task<HttpStatusCode> DeleteHolidayMaster(int Id)
         {

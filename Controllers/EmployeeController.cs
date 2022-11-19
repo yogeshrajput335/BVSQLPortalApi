@@ -22,6 +22,7 @@ namespace BVPortalApi.Controllers
         {
             this.DBContext = DBContext;
         }
+
         [HttpGet("GetEmployee")]
         public async Task<ActionResult<List<EmployeeDTO>>> Get()
         {
@@ -47,6 +48,7 @@ namespace BVPortalApi.Controllers
                 return List;
             }
         }
+
         [HttpPost("InsertEmployee")]
         public async Task < HttpStatusCode > InsertEmployee(EmployeeDTO s) {
             var entity = new Employee() {
@@ -61,6 +63,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.Created;
         }
+
         [HttpPut("UpdateEmployee")]
         public async Task<HttpStatusCode> UpdateEmployee(EmployeeDTO Employee) {
             var entity = await DBContext.Employee.FirstOrDefaultAsync(s => s.Id == Employee.Id);
@@ -73,6 +76,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
+        
         [HttpDelete("DeleteEmployee/{Id}")]
         public async Task < HttpStatusCode > DeleteEmployee(int Id) {
             var entity = new Employee() {
@@ -82,6 +86,90 @@ namespace BVPortalApi.Controllers
             DBContext.Employee.Remove(entity);
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
+        }
+
+        [HttpPost("SetClientPerHour/{Id}/{perHour}/{client}")]
+        public async Task<HttpStatusCode> SetClientPerHour(int Id, int perHour, int client,[FromBody] SetTermDTO setTerm)
+        {
+            float oldPerHour = 0;
+            var entity = await DBContext.EmpClientPerHour.FirstOrDefaultAsync(s => s.EmployeeId == Id && s.ClientId==client);
+            if (entity == null)
+            {
+                EmpClientPerHour ct = new EmpClientPerHour();
+                ct.EmployeeId = Id;
+                ct.ClientId = client;
+                ct.PerHour = perHour;
+                DBContext.EmpClientPerHour.Add(ct);
+            }
+            else if (entity != null && entity.PerHour != perHour)
+            {
+                oldPerHour = entity.PerHour;
+                entity.PerHour = perHour;
+            }
+            var emp = await DBContext.Employee.FirstOrDefaultAsync(s => s.Id == setTerm.ChangeBy);
+            EmpClientPerHourHistory cth = new EmpClientPerHourHistory();
+            cth.ClientId = client;
+            cth.EmployeeId = Id;
+            cth.OldPerHour = oldPerHour;
+            cth.NewPerHour = perHour;
+            cth.ReasonForChange = setTerm.ReasonForChange; 
+            cth.ChangeDate = DateTime.Now;
+            cth.ChangeBy = emp.FirstName+" "+emp.LastName; 
+            DBContext.EmpClientPerHourHistory.Add(cth);
+            await DBContext.SaveChangesAsync();
+            return HttpStatusCode.OK;
+        }
+
+        [HttpGet("GetEmpClientPerHourHistory/{id}")]
+        public async Task<ActionResult<List<EmpClientPerHourHistoryDTO>>> GetEmpClientPerHourHistory(int id)
+        {
+            var List = await DBContext.EmpClientPerHourHistory.Where(x => x.EmployeeId == id).Select(
+                s => new EmpClientPerHourHistoryDTO
+                {
+                    Id = s.Id,
+                    EmployeeId = s.EmployeeId,
+                    ClientId = s.ClientId,
+                    OldPerHour = s.OldPerHour,
+                    NewPerHour = s.NewPerHour,
+                    Employee = s.Employee.FirstName+ " "+s.Employee.LastName,
+                    Client = s.Client.ClientName,
+                    ReasonForChange = s.ReasonForChange,
+                    ChangeDate = s.ChangeDate,
+                    ChangeBy = s.ChangeBy,
+                }
+            ).ToListAsync();
+            if (List.Count < 0)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return List;
+            }
+        }
+        [HttpGet("GetEmpClientPerHour")]
+        public async Task<ActionResult<List<EmpClientPerHourDTO>>> GetEmpClientPerHour(int id)
+        {
+            var List = await DBContext.EmpClientPerHour.Select(
+                s => new EmpClientPerHourDTO
+                {
+                    Id = s.Id,
+                    EmployeeId = s.EmployeeId,
+                    ClientId = s.ClientId,
+                    PerHour = s.PerHour,
+                    Employee = s.Employee.FirstName+ " "+s.Employee.LastName,
+                    Client = s.Client.ClientName
+                }
+            ).ToListAsync();
+
+            if (List.Count < 0)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return List;
+            }
         }
     }
 }

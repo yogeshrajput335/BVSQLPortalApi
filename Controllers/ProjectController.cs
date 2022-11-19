@@ -22,6 +22,7 @@ namespace BVPortalApi.Controllers
         {
             this.DBContext = DBContext;
         }
+
         [HttpGet("GetProjects")]
         public async Task<ActionResult<List<ProjectDTO>>> Get()
         {
@@ -49,6 +50,7 @@ namespace BVPortalApi.Controllers
                 return List;
             }
         }
+
         [HttpPost("InsertProject")]
         public async Task < HttpStatusCode > InsertProject(ProjectDTO s) {
             var entity = new Project() {
@@ -65,6 +67,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.Created;
         }
+
         [HttpPut("UpdateProject")]
         public async Task<HttpStatusCode> UpdateProject(ProjectDTO Project) {
             var entity = await DBContext.Project.FirstOrDefaultAsync(s => s.Id == Project.Id);
@@ -78,6 +81,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
+        
         [HttpDelete("DeleteProject/{Id}")]
         public async Task < HttpStatusCode > DeleteProject(int Id) {
             var entity = new Project() {

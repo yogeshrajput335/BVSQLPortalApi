@@ -44,6 +44,10 @@ namespace BVPortalApi.Models
         public DbSet<TimesheetDetail> TimesheetDetail { get; set; }
         public DbSet<Invoice> Invoice { get; set; }
         public DbSet<InvoiceProduct> InvoiceProduct { get; set; }
+        public DbSet<ClientTerm> ClientTerm { get; set; }
+        public DbSet<ClientTermHistory> ClientTermHistory { get; set; }
+        public DbSet<EmpClientPerHour> EmpClientPerHour { get; set; }
+        public DbSet<EmpClientPerHourHistory> EmpClientPerHourHistory { get; set; }
 
     }
 }

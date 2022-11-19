@@ -22,6 +22,7 @@ namespace BVPortalApi.Controllers
         {
             this.DBContext = DBContext;
         }
+        
         [HttpGet("GetAssetAllocation")]
         public async Task<ActionResult<List<AssetAllocationDTO>>> Get()
         {
@@ -50,6 +51,7 @@ namespace BVPortalApi.Controllers
                 return List;
             }
         }
+
         [HttpPost("InsertAssetAllocation")]
         public async Task < HttpStatusCode > InsertAssetAllocation(AssetAllocationDTO s) {
             var entity = new AssetAllocation() {
@@ -64,6 +66,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.Created;
         }
+
         [HttpPut("UpdateAssetAllocation")]
         public async Task<HttpStatusCode> UpdateAssetAllocation(AssetAllocationDTO AssetAllocation) {
             var entity = await DBContext.AssetAllocation.FirstOrDefaultAsync(s => s.Id == AssetAllocation.Id);
@@ -76,6 +79,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
+        
         [HttpDelete("DeleteAssetAllocation/{Id}")]
         public async Task < HttpStatusCode > DeleteAssetAllocation(int Id) {
             var entity = new AssetAllocation() {

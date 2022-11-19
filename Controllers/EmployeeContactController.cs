@@ -22,6 +22,7 @@ namespace BVPortalApi.Controllers
         {
             this.DBContext = DBContext;
         }
+
         [HttpGet("GetEmployeeContact")]
         public async Task<ActionResult<List<EmployeeContactDTO>>> GetEmployeeContact()
         {
@@ -47,7 +48,7 @@ namespace BVPortalApi.Controllers
                 return List;
             }
         }
-        //GetEmployeeContactByEmpId
+        
         [HttpGet("GetEmployeeContactByEmpId/{empId}")]
         public async Task<ActionResult<EmployeeContactDTO>> GetEmployeeContactByEmpId(int empId)
         {
@@ -74,6 +75,7 @@ namespace BVPortalApi.Controllers
                 return List;
             }
         }
+
         [HttpPost("InsertEmployeeContact")]
         public async Task < HttpStatusCode > InsertEmployeeContact(EmployeeContactDTO s) {
             var entity = new EmployeeContact() {
@@ -88,6 +90,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.Created;
         }
+
         [HttpPut("UpdateEmployeeContact")]
         public async Task<HttpStatusCode> UpdateEmployeeContact(EmployeeContactDTO Employee) {
             var entity = await DBContext.EmployeeContact.FirstOrDefaultAsync(s => s.Id == Employee.Id);
@@ -99,6 +102,7 @@ namespace BVPortalApi.Controllers
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }
+        
         [HttpDelete("DeleteEmployeeContact/{Id}")]
         public async Task < HttpStatusCode > DeleteEmployeeContact(int Id) {
             var entity = new EmployeeContact() {

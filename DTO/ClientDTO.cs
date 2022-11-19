@@ -14,6 +14,12 @@ namespace BVPortalApi.DTO
         public string? PhoneNumber { get; set; }
         public string? Address { get; set; }
         public string? Status { get; set; }
+        public int? Term { get; set; }
+        public string? TermText { get; set; }
         
+    }
+    public class SetTermDTO{
+        public string? ReasonForChange { get; set; }
+        public int? ChangeBy { get; set; }
     }
 }
