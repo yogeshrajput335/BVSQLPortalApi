@@ -7,6 +7,7 @@ using BVPortalApi.CommonFeatures;
 using BVPortalApi.CommonFeatures.Contracts;
 using BVPortalApi.DTO;
 using BVPortalApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +24,7 @@ namespace BVPortalApi.Controllers
             this.DBContext = DBContext;
         }
 
-        [HttpGet("GetHolidayMaster")]
+        [HttpGet("GetHolidayMaster"), Authorize(Roles = "ADMIN,EMPLOYEE")]
         public async Task<ActionResult<List<HolidayMasterDTO>>> Get()
         {
             var List = await DBContext.HolidayMaster.Select(
@@ -47,7 +48,7 @@ namespace BVPortalApi.Controllers
             }
         }
 
-        [HttpPost("InsertHolidayMaster")]
+        [HttpPost("InsertHolidayMaster"), Authorize(Roles = "ADMIN")]
         public async Task<HttpStatusCode> InsertHolidayMaster(HolidayMasterDTO s)
         {
             var entity = new HolidayMaster()
@@ -63,7 +64,7 @@ namespace BVPortalApi.Controllers
             return HttpStatusCode.Created;
         }
 
-        [HttpPut("UpdateHolidayMaster")]
+        [HttpPut("UpdateHolidayMaster"), Authorize(Roles = "ADMIN")]
         public async Task<HttpStatusCode> UpdateHolidayMaster(HolidayMasterDTO HolidayMaster)
         {
             var entity = await DBContext.HolidayMaster.FirstOrDefaultAsync(s => s.Id == HolidayMaster.Id);
@@ -75,7 +76,7 @@ namespace BVPortalApi.Controllers
             return HttpStatusCode.OK;
         }
         
-        [HttpDelete("DeleteHolidayMaster/{Id}")]
+        [HttpDelete("DeleteHolidayMaster/{Id}"), Authorize(Roles = "ADMIN")]
         public async Task<HttpStatusCode> DeleteHolidayMaster(int Id)
         {
             var entity = new HolidayMaster()

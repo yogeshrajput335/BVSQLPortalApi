@@ -14,8 +14,8 @@ namespace BVPortalApi.Models
         public int? EmployeeId { get; set; }
         public DateTime? WorkDay { get; set; }
         public int? Hours { get; set; }
-        public virtual Timesheet Timesheet { get; set; }
-        public virtual Employee Employee { get; set; }
-        public virtual Project Project { get; set; }
+        public Timesheet Timesheet { get; set; }
+        public Employee Employee { get; set; }
+        public Project Project { get; set; }
     }
 }

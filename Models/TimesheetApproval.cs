@@ -14,7 +14,7 @@ namespace BVPortalApi.Models
         public int? ApproverId { get; set; }
         public string? Status { get; set; }
         public string? Notes { get; set; }
-        public virtual Timesheet Timesheet { get; set; }
-        public virtual Employee Employee { get; set; }
+        public Timesheet Timesheet { get; set; }
+        public Employee Employee { get; set; }
     }
 }
