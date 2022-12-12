@@ -11,6 +11,11 @@ namespace BVPortalApi.Models
         public int? EmployeeId { get; set; }
         public int? ProjectId { get; set; }
         public DateTime WeekEndingDate { get; set; }
+        public string Month { get; set; }
+        public string Year { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string Duration { get; set; }
         public string? Status { get; set; }
         public virtual Employee Employee { get; set; }
         public virtual Project Project { get; set; }

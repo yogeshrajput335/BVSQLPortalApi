@@ -7,13 +7,14 @@ using BVPortalApi.CommonFeatures;
 using BVPortalApi.CommonFeatures.Contracts;
 using BVPortalApi.DTO;
 using BVPortalApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BVPortalApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]"), Authorize(Roles = "ADMIN")]
     public class InvoiceController : ControllerBase
     {
         private readonly BVContext DBContext;
@@ -39,7 +40,21 @@ namespace BVPortalApi.Controllers
                     FromLine2 = s.FromLine2,
                     FromLine3 = s.FromLine3,
                     Term = s.Term,
-                    Status = s.Status
+                    Status = s.Status,
+                    Products =  (DBContext.InvoiceProduct.Where(x=>x.InvoiceId == s.Id).Select(
+                    s => new InvoiceProductDTO
+                    {
+                        Id = s.Id,
+                        EmployeeId = s.EmployeeId,
+                        ProjectId = s.ProjectId,
+                        InvoiceId = s.InvoiceId,
+                        Employee = s.Employee.FirstName+" "+s.Employee.LastName,
+                        Project = s.Project.ProjectName,
+                        ProjectType = s.Project.ProjectType,
+                        PerHourCost = s.PerHourCost,
+                        TotalHours = s.TotalHours,
+                        TotalCost = s.TotalCost,
+                    }).ToList() )               
                 }
             ).ToListAsync();
             
@@ -88,6 +103,9 @@ namespace BVPortalApi.Controllers
                 s => new InvoiceProductDTO
                 {
                     Id = s.Id,
+                    EmployeeId = s.EmployeeId,
+                    ProjectId = s.ProjectId,
+                    InvoiceId = s.InvoiceId,
                     Employee = s.Employee.FirstName+" "+s.Employee.LastName,
                     Project = s.Project.ProjectName,
                     ProjectType = s.Project.ProjectType,
@@ -117,7 +135,7 @@ namespace BVPortalApi.Controllers
             List<InvoiceProduct> p = s.Products.Select(
                 s => new InvoiceProduct
                 {
-                    Id = s.Id,
+                    //Id = s.Id,
                     EmployeeId = s.EmployeeId,
                     InvoiceId = entity.Id,
                     ProjectId = s.ProjectId,
@@ -143,6 +161,22 @@ namespace BVPortalApi.Controllers
             entity.Term = Invoice.Term;
 
             entity.Status = Invoice.Status;
+            await DBContext.SaveChangesAsync();
+            IQueryable<InvoiceProduct> ip = DBContext.InvoiceProduct.Where(x=>x.InvoiceId ==Invoice.Id);
+            DBContext.InvoiceProduct.RemoveRange(ip);
+            List<InvoiceProduct> p = Invoice.Products.Select(
+                s => new InvoiceProduct
+                {
+                    //Id = s.Id,
+                    EmployeeId = s.EmployeeId,
+                    InvoiceId = entity.Id,
+                    ProjectId = s.ProjectId,
+                    PerHourCost = s.PerHourCost,
+                    TotalHours = s.TotalHours,
+                    TotalCost = s.TotalCost
+                }
+            ).ToList();
+            DBContext.InvoiceProduct.AddRange(p);
             await DBContext.SaveChangesAsync();
             return HttpStatusCode.OK;
         }

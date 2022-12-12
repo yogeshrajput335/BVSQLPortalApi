@@ -7,13 +7,14 @@ using BVPortalApi.CommonFeatures;
 using BVPortalApi.CommonFeatures.Contracts;
 using BVPortalApi.DTO;
 using BVPortalApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BVPortalApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]"), Authorize(Roles = "ADMIN")]
     public class AssetTypeController : ControllerBase
     {
         private readonly BVContext DBContext;

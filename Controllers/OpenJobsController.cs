@@ -7,6 +7,7 @@ using BVPortalApi.CommonFeatures;
 using BVPortalApi.CommonFeatures.Contracts;
 using BVPortalApi.DTO;
 using BVPortalApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,7 +24,7 @@ namespace BVPortalApi.Controllers
             this.DBContext = DBContext;
         }
 
-        [HttpGet("GetOpenjobs")]
+        [HttpGet("GetOpenjobs"), Authorize(Roles = "EMPLOYEE,ADMIN")]
         public async Task<ActionResult<List<OpenjobsDTO>>> Get()
         {
             var List = await DBContext.Openjobs.Where(x=>x.Status=="ACTIVE").Select(
@@ -49,7 +50,7 @@ namespace BVPortalApi.Controllers
             }
         }
 
-        [HttpGet("GetDeletedjobs")]
+        [HttpGet("GetDeletedjobs"), Authorize(Roles = "ADMIN")]
         public async Task<ActionResult<List<OpenjobsDTO>>> GetDeletedjobs()
         {
             var List = await DBContext.Openjobs.Where(x=>x.Status=="" || x.Status=="INACTIVE").Select(
@@ -75,7 +76,7 @@ namespace BVPortalApi.Controllers
             }
         }
 
-        [HttpPut("UpdateStatusActiveOpenjobs/{Id}")]
+        [HttpPut("UpdateStatusActiveOpenjobs/{Id}"), Authorize(Roles = "ADMIN")]
         public async Task<HttpStatusCode> UpdateStatusActiveOpenjobs(int Id ) {
             var entity = await DBContext.Openjobs.FirstOrDefaultAsync(s => s.Id == Id);
             
@@ -84,7 +85,7 @@ namespace BVPortalApi.Controllers
             return HttpStatusCode.OK;
         }
 
-        [HttpPost("InsertOpenjobs")]
+        [HttpPost("InsertOpenjobs"), Authorize(Roles = "ADMIN")]
         public async Task < HttpStatusCode > InsertOpenjobs(OpenjobsDTO s) {
             var entity = new Openjobs() {
                 JobName = s.JobName,
@@ -99,7 +100,7 @@ namespace BVPortalApi.Controllers
             return HttpStatusCode.Created;
         }
 
-        [HttpPut("UpdateOpenjobs")]
+        [HttpPut("UpdateOpenjobs"), Authorize(Roles = "ADMIN")]
         public async Task<HttpStatusCode> UpdateOpenjobs(OpenjobsDTO Openjobs) {
             var entity = await DBContext.Openjobs.FirstOrDefaultAsync(s => s.Id == Openjobs.Id);
             entity.JobName = Openjobs.JobName;
@@ -112,7 +113,7 @@ namespace BVPortalApi.Controllers
             return HttpStatusCode.OK;
         }
 
-        [HttpPut("UpdateStatusInactiveOpenjobs/{Id}")]
+        [HttpPut("UpdateStatusInactiveOpenjobs/{Id}"), Authorize(Roles = "ADMIN")]
         public async Task<HttpStatusCode> UpdateStatusInactiveOpenjobs(int Id ) {
             var entity = await DBContext.Openjobs.FirstOrDefaultAsync(s => s.Id == Id);
             
@@ -121,7 +122,7 @@ namespace BVPortalApi.Controllers
             return HttpStatusCode.OK;
         }
 
-        [HttpDelete("DeleteOpenjobs/{Id}")]
+        [HttpDelete("DeleteOpenjobs/{Id}"), Authorize(Roles = "ADMIN")]
         public async Task < HttpStatusCode > DeleteOpenjobs(int Id) {
             var entity = new Openjobs() {
                 Id = Id
@@ -132,7 +133,7 @@ namespace BVPortalApi.Controllers
             return HttpStatusCode.OK;
         }
         
-        [HttpPost("ApplyJob")]
+        [HttpPost("ApplyJob"), Authorize(Roles = "EMPLOYEE")]
         public async Task < HttpStatusCode > ApplyJob(ApplyJobDTO s) {
             var emp = DBContext.Employee.Where(x=>x.Id==s.EmployeeId).FirstOrDefault();
             //  : Add jobid in candidate  
